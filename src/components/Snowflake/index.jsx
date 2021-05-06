@@ -3,7 +3,20 @@ import RadarChart from 'react-svg-radar-chart'
 import 'react-svg-radar-chart/build/css/index.css'
 import styled from 'styled-components'
 
-const Snowflake = styled.div``
+const Snowflake = styled.div`
+  .caption {
+    fill: #fff;
+    text-shadow: 1px 1px 0 #222;
+  }
+
+  .shape {
+    fill-opacity: 0.1;
+  }
+
+  .scale {
+    fill: rgba(58, 71, 89, 0.5);
+  }
+`
 
 const defaultCaptions = {
   value: 'Value',
@@ -14,15 +27,13 @@ const defaultCaptions = {
 }
 
 export default ({ data, options }) => {
-  const { captions = defaultCaptions, color, size = 250 } = options
+  const { captions = defaultCaptions, color, size = 150 } = options
   const snowflakeData = [
     {
       data,
       meta: { color },
     },
   ]
-
-  console.log(`snowflakeData`, JSON.stringify(snowflakeData, null, 5))
 
   return (
     <Snowflake>

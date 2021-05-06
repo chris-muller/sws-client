@@ -12,8 +12,7 @@ import styled from 'styled-components'
 
 const Main = styled.main`
   display: grid;
-  /* grid-template-columns: 40px auto 20px; */
-  grid-template-rows: min-content auto 20px;
+  grid-template-rows: min-content auto min-content;
 
   flex-direction: column;
 `
@@ -23,7 +22,7 @@ function App() {
     <Main className="app-main">
       <Header>Simply Window St</Header>
       <ResultsPage />
-      <Footer />
+      <Footer>©Simply Window Ave. - Christopher Muller</Footer>
     </Main>
   )
 }
