@@ -37,7 +37,7 @@ const Name = styled.h2`
 const Symbols = styled.aside`
   display: grid;
   grid-gap: 36px;
-  grid-template-columns: repeat(3, min-content);
+  grid-template-columns: repeat(4, min-content);
   margin: 16px 0;
 `
 
@@ -80,6 +80,7 @@ export default ({ company }) => {
           <Symbol value={company.tickerSymbol}>Ticker</Symbol>
           <Symbol value={company.exchangeSymbol}>Exchange</Symbol>
           <Symbol value={company.exchangeCountryIiso}>Country</Symbol>
+          <Symbol value={`${total}/30`}>total</Symbol>
         </Symbols>
       </div>
       {scores && <Snowflake data={scores} options={options} />}
