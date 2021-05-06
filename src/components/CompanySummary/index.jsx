@@ -70,11 +70,13 @@ export default ({ company }) => {
       <div className="content">
         <header>
           <Name>{company.name}</Name>
-          <Price
-            price={latestPrice.price}
-            currency={company.listingCurrencyIiso}
-            positive={trendingUp}
-          />
+          {latestPrice && (
+            <Price
+              price={latestPrice.price}
+              currency={company.listingCurrencyIiso}
+              positive={trendingUp}
+            />
+          )}
         </header>
         <Symbols>
           <Symbol value={company.tickerSymbol}>Ticker</Symbol>
