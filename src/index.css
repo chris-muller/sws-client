@@ -1,4 +1,15 @@
-body {
+body,
+html {
   padding: 0;
   margin: 0;
+  font-family: Roboto, -apple-system, system-ui, 'Helvetica Neue', Arial,
+    sans-serif;
+  background: rgb(21, 27, 36);
+}
+
+body,
+html,
+#root,
+.app-main {
+  min-height: 100vh;
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import ResultsPage from './pages/Results'
+import ResultsPage from './components/Results'
 import styled from 'styled-components'
 
 /*
@@ -13,14 +13,14 @@ import styled from 'styled-components'
 const Main = styled.main`
   display: grid;
   /* grid-template-columns: 40px auto 20px; */
-  grid-template-rows: 40px auto 20px;
+  grid-template-rows: min-content auto 20px;
 
   flex-direction: column;
 `
 
 function App() {
   return (
-    <Main>
+    <Main className="app-main">
       <Header>Simply Window St</Header>
       <ResultsPage />
       <Footer />
