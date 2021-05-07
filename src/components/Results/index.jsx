@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { Form, Row, Col, InputGroup } from 'react-bootstrap'
 import { getCompanies } from '../../services/swsApi'
 import CompanySummary from '../CompanySummary'
+import filterCompanies from './filterCompanies'
+import sortCompanies from './sortCompanies'
+import Select from './Select'
 
 const Page = styled.div`
   margin: 16px;
-
-  & > * {
-    margin-bottom: 8px;
-  }
 `
 const Search = styled.div`
   color: #edeff0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas: 'sort spacing filter';
 
-  .form-group {
-    margin: 0;
+  .sort {
+    grid-area: sort;
+  }
+  .filter {
+    grid-area: filter;
+  }
+
+  & > * > *:last-child {
+    margin-bottom: 0;
   }
 `
 const Results = styled.div`
@@ -34,66 +43,80 @@ const SORT = {
   VOLATILITY: 'Volatility',
 }
 
+const SCORES = {}
+for (let index = 1; index <= 30; index++) {
+  SCORES[index] = `below ${index}`
+}
+
+const exchangeOptionsFromArray = (companies) => {
+  const values = companies.map((c) => c.exchangeSymbol)
+
+  // filter duplicates and transform into
+  // nested arrays to convert to object
+  const unique = [['', 'Select option']]
+  const mappedValues = [new Set(values)].map((e) => [e, e])
+  unique.push(...mappedValues)
+
+  // zip nested arrays into object
+  return Object.fromEntries(unique)
+}
+
 export default () => {
-  const [companies, setCompanies] = useState([])
-  const [sortDirection, setSortDirection] = useState('ASC')
+  const [allCompanies, setCompanies] = useState([])
+  const exchanges = exchangeOptionsFromArray(allCompanies)
+  const [sortDirection, setSortDirection] = useState('DESC')
   const [sortBy, setSortBy] = useState('SCORE')
+  const [filterTotal, setFilterScore] = useState('')
+  const [filterExchange, setFilterByExchange] = useState('')
+  const filteredCompanies = useMemo(() => {
+    return filterCompanies(allCompanies, {
+      filterTotal,
+      filterExchange,
+    })
+  }, [filterTotal, filterExchange, allCompanies])
+  const companies = useMemo(() => {
+    return filteredCompanies.sort(sortCompanies(sortBy, sortDirection))
+  }, [sortDirection, sortBy, filteredCompanies])
 
   useEffect(() => {
-    getCompanies({ sortDirection, sortBy, priceHistory: true }).then((data) => {
+    getCompanies({
+      priceHistory: true,
+    }).then((data) => {
       setCompanies(data)
     })
   }, [sortDirection, sortBy])
+
   return (
     <Page>
       <Search>
-        <Form>
-          <Row>
-            <Col>
-              <Form.Group controlId="exampleForm.SelectCustom">
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>Sort By:</InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    as="select"
-                    custom
-                    onChange={(e) => setSortBy(e.target.value)}
-                    value={sortBy}
-                  >
-                    {Object.entries(SORT).map(([key, label]) => (
-                      <option key={key} value={key}>
-                        {label}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </InputGroup>
-              </Form.Group>
-            </Col>
-            <Col />
-            <Col>
-              <Form.Group controlId="exampleForm.SelectCustom">
-                <InputGroup>
-                  <InputGroup.Prepend>
-                    <InputGroup.Text>Sort direction:</InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <Form.Control
-                    as="select"
-                    custom
-                    onChange={(e) => setSortDirection(e.target.value)}
-                    value={sortDirection}
-                  >
-                    {Object.entries(DIRECTION).map(([key, label]) => (
-                      <option key={key} value={key}>
-                        {label}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </InputGroup>
-              </Form.Group>
-            </Col>
-          </Row>
-        </Form>
+        <div className="sort">
+          <Select
+            label="Sort by"
+            options={SORT}
+            value={sortBy}
+            setValue={setSortBy}
+          />
+          <Select
+            label="Sort direction"
+            options={DIRECTION}
+            value={sortDirection}
+            setValue={setSortDirection}
+          />
+        </div>
+        <div className="filter">
+          <Select
+            label="Filter by exchange"
+            options={exchanges}
+            value={filterExchange}
+            setValue={setFilterByExchange}
+          />
+          <Select
+            label="Exclude scores"
+            options={SCORES}
+            value={filterTotal}
+            setValue={setFilterScore}
+          />
+        </div>
       </Search>
       <Results>
         {companies.map((company) => (
