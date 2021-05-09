@@ -7,24 +7,26 @@ const getPriceVolatility = (prices) => {
 }
 
 export default (value, direction) => (a, b) => {
-  // If no value to sort by, or already sorted, don't sort
-  let sortValue = 0
-
   if (value === 'SCORE') {
-    sortValue = a.score.total - b.score.total
+    if (direction === 'DESC') {
+      return b.score.total - a.score.total
+    }
+
+    return a.score.total - b.score.total
   }
 
   if (value === 'VOLATILITY') {
     const aVariability = getPriceVolatility(a.closingPrices)
     const bVariability = getPriceVolatility(b.closingPrices)
 
-    sortValue = aVariability - bVariability
+    // if (direction === 'ASC') {
+    if (direction === 'DESC') {
+      return bVariability - aVariability
+    }
+
+    return aVariability - bVariability
   }
 
-  // Reverse the sorting direction
-  if (direction === 'DESC') {
-    return sortValue * -1
-  }
-
-  return sortValue
+  // If no value to sort by, or already sorted, don't sort
+  return 0
 }
