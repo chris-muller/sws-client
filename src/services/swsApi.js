@@ -1,7 +1,5 @@
-const BASE_URL = 'http://localhost:3000'
-
 export const getCompanies = ({ priceHistory = false }) => {
-  let url = `${BASE_URL}/company`
+  let url = `${process.env.SWS_API_BASE}/company`
 
   if (priceHistory) {
     url += `?price_history=true`
