@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import styled from 'styled-components'
-import { Form, Row, Col, InputGroup } from 'react-bootstrap'
 import { getCompanies } from '../../services/swsApi'
 import CompanySummary from '../CompanySummary'
 import filterCompanies from './filterCompanies'
@@ -43,7 +42,7 @@ const SORT = {
   VOLATILITY: 'Volatility',
 }
 
-const SCORES = {}
+const SCORES = { '': 'Select option' }
 for (let index = 1; index <= 30; index++) {
   SCORES[index] = `below ${index}`
 }
@@ -54,7 +53,8 @@ const exchangeOptionsFromArray = (companies) => {
   // filter duplicates and transform into
   // nested arrays to convert to object
   const unique = [['', 'Select option']]
-  const mappedValues = [new Set(values)].map((e) => [e, e])
+  const mappedValues = [...new Set(values)].map((e) => [e, e])
+
   unique.push(...mappedValues)
 
   // zip nested arrays into object
